@@ -4,7 +4,7 @@ import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.service.OpenAiService;
 
 public class ConsultaChatGPT {
-    public static String obterTraducao(String texto) {
+    /*public static String obterTraducao(String texto) {
         OpenAiService service = new OpenAiService(System.getenv());
 
         CompletionRequest requisicao = CompletionRequest.builder()
@@ -16,5 +16,5 @@ public class ConsultaChatGPT {
 
         var resposta = service.createCompletion(requisicao);
         return resposta.getChoices().get(0).getText();
-    }
+    }*/
 }
