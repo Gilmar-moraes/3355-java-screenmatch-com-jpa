@@ -19,8 +19,6 @@ public class Principal {
     private final String ENDERECO = "https://www.omdbapi.com/?t=";
     private final String API_KEY = "&apikey=6585022c";
 
-    private List<DadosSerie> dadosSeries = new ArrayList<>();
-
     private SerieRepository serieRepository;
 
     private List<Serie> series = new ArrayList<>();
@@ -36,7 +34,7 @@ public class Principal {
                     1 - Buscar séries
                     2 - Buscar episódios
                     3 - Listar séries buscadas
-                                    
+                    4 - Buscar série por titulo
                     0 - Sair
                     """;
 
@@ -54,6 +52,9 @@ public class Principal {
                     break;
                 case 3:
                     listarSeriesBuscadas();
+                    break;
+                case 4:
+                    buscarSeriePorTitulo();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -76,17 +77,15 @@ public class Principal {
         System.out.println("Digite o nome da série para busca");
         var nomeSerie = leitura.nextLine();
         var json = consumo.obterDados(ENDERECO + nomeSerie.replace(" ", "+") + API_KEY);
-        DadosSerie dados = conversor.obterDados(json, DadosSerie.class);
-        return dados;
+        return conversor.obterDados(json, DadosSerie.class);
     }
 
-    private void buscarEpisodioPorSerie(){
+    private void buscarEpisodioPorSerie() {
         listarSeriesBuscadas();
         System.out.println("Escolha uma série pelo nome");
         var nomeSerie = leitura.nextLine();
 
-        Optional<Serie> serie = series.stream().filter(s -> s.getTitulo().toLowerCase().contains(nomeSerie.toLowerCase()))
-                .findFirst();
+        Optional<Serie> serie = serieRepository.findByTituloContainingIgnoreCase(nomeSerie);
 
         if (serie.isPresent()) {
             var serieEncontrada = serie.get();
@@ -99,14 +98,14 @@ public class Principal {
             }
             temporadas.forEach(System.out::println);
 
-           List<Episodio> episodios = temporadas.stream()
+            List<Episodio> episodios = temporadas.stream()
                     .flatMap(d -> d.episodios().stream()
                             .map(e -> new Episodio(d.numero(), e)))
                     .collect(Collectors.toList());
             serieEncontrada.setEpisodios(episodios);
             serieRepository.save(serieEncontrada);
         } else {
-            System.out.println("Serie não encontrada!");
+            System.out.println("Série não encontrada!");
         }
 
     }
@@ -116,5 +115,16 @@ public class Principal {
         series.stream()
                 .sorted(Comparator.comparing(Serie::getGenero))
                 .forEach(System.out::println);
+    }
+
+    private void buscarSeriePorTitulo() {
+        System.out.println("Escolha ums série pelo nome:");
+        var nomeSerie = leitura.nextLine();
+        Optional<Serie> serieBuscada = serieRepository.findByTituloContainingIgnoreCase(nomeSerie);
+        if (serieBuscada.isPresent()){
+            System.out.println("Dados da série: " + serieBuscada.get());
+        } else {
+            System.out.println("Série não encontrada!");
+        }
     }
 }
