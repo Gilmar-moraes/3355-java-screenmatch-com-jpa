@@ -35,13 +35,13 @@ public class Principal {
                     2 - Buscar episódios
                     3 - Listar séries buscadas
                     4 - Buscar série por titulo
+                    5 - Buscar série por ator
                     0 - Sair
                     """;
 
             System.out.println(menu);
             opcao = leitura.nextInt();
             leitura.nextLine();
-
 
             switch (opcao) {
                 case 1:
@@ -55,6 +55,9 @@ public class Principal {
                     break;
                 case 4:
                     buscarSeriePorTitulo();
+                    break;
+                case 5:
+                    buscarSeriePorAtor();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -121,10 +124,22 @@ public class Principal {
         System.out.println("Escolha ums série pelo nome:");
         var nomeSerie = leitura.nextLine();
         Optional<Serie> serieBuscada = serieRepository.findByTituloContainingIgnoreCase(nomeSerie);
-        if (serieBuscada.isPresent()){
+        if (serieBuscada.isPresent()) {
             System.out.println("Dados da série: " + serieBuscada.get());
         } else {
             System.out.println("Série não encontrada!");
         }
+    }
+
+    private void buscarSeriePorAtor() {
+        System.out.println("Digite o nome do ator(a):");
+        var nomeAtores = leitura.nextLine();
+
+        System.out.println("Avaliaçoes a partir de que valor: ");
+        var avaliacao = leitura.nextDouble();
+
+        List<Serie> serieEncontradas = serieRepository.findByAtoresContainingIgnoreCaseAndAvaliacaoGreterThanEqual(nomeAtores, avaliacao);
+        System.out.println("Série em que o(a) " + nomeAtores + " trabalhou: " );
+        serieEncontradas.forEach(s -> System.out.println(s.getTitulo() + " avaliação: " + s.getAvaliacao()));
     }
 }
