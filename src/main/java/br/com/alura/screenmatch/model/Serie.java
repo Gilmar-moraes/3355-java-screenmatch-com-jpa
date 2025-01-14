@@ -1,6 +1,5 @@
 package br.com.alura.screenmatch.model;
 
-import br.com.alura.screenmatch.service.ConsultaChatGPT;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class Serie  {
 
     @Enumerated(EnumType.STRING)
 
-    private Categoria genero;
+    private CategoriaEnum genero;
 
     private String atores;
 
@@ -41,7 +40,7 @@ public class Serie  {
       this.titulo = dadosSerie.titulo();
       this.totalTemporadas = dadosSerie.totalTemporadas();
       this.avaliacao = OptionalDouble.of(Double.valueOf(dadosSerie.avaliacao())).orElse(0);
-      this.genero = Categoria.fromString(dadosSerie.genero().split(",")[0].trim());
+      this.genero = CategoriaEnum.fromString(dadosSerie.genero().split(",")[0].trim());
       this.atores = dadosSerie.atores();
       this.poster = dadosSerie.poster();
       this.sinopse = dadosSerie.sinopse();
@@ -88,11 +87,11 @@ public class Serie  {
       this.avaliacao = avaliacao;
    }
 
-   public Categoria getGenero() {
+   public CategoriaEnum getGenero() {
       return genero;
    }
 
-   public void setGenero(Categoria genero) {
+   public void setGenero(CategoriaEnum genero) {
       this.genero = genero;
    }
 
